@@ -8,7 +8,7 @@ Ever been frustrated that the customer countdowns were inexact? Me too, so I mad
 ## Installation
 1. [Download BepInEx](https://github.com/BepInEx/BepInEx/releases)
 2. [Install BepInEx](https://docs.bepinex.dev/articles/user_guide/installation/index.html)
-3. Download this mod
+3. [Download this mod](https://github.com/Elec0/plateup-label-timer-countdown/releases)
 4. Extract to your PlateUp! game directory
 
 
