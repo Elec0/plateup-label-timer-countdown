@@ -6,6 +6,7 @@ using BepInEx.Logging;
 using UnityEngine;
 using System;
 using Unity.Entities;
+using BepInEx.Configuration;
 
 namespace LabelCountdown
 {
@@ -14,14 +15,15 @@ namespace LabelCountdown
     public class Plugin : BaseUnityPlugin
     {
         /// <summary>
-        /// How many seconds an entry needs to be before it's deleted.
+        /// How many seconds old an entry needs to be before it's deleted.
         /// </summary>
         public const float PATIENCE_PRUNE_TIME = 1;
 
         internal static ManualLogSource Log;
 
         private static Harmony _plugin;
-        private TimerGUI timerGUI = new TimerGUI();
+        private TimerGUI timerGUI;
+
 
         private void Awake()
         {
@@ -29,7 +31,10 @@ namespace LabelCountdown
 
             _plugin = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginInfo.PLUGIN_GUID);
             HarmonyFileLog.Enabled = true;
-            // Plugin startup logic
+            ConfigHelper.SetupConfig(Config);
+
+            timerGUI = new TimerGUI();
+
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
         }
 
@@ -53,5 +58,7 @@ namespace LabelCountdown
         {
             _plugin?.UnpatchSelf();
         }
+
+        
     }
 }

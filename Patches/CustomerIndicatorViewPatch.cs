@@ -63,10 +63,6 @@ namespace LabelCountdown.Patches
                 DataMap.TryAdd(__instance.GetInstanceID(), 
                     new PatienceContainer(time, view_data.PatienceReason, Time.time, isQ));
             }
-
-            //var text = __instance.GetComponent<TextMeshPro>() ?? SetupText(__instance);
-            //StyleText(text);
-            //text.SetText(Math.Round(view_data.Patience, 2).ToString());
         }
 
         /// <summary>
@@ -108,7 +104,7 @@ namespace LabelCountdown.Patches
                 if(Math.Abs(Time.time - item.Value.lastUpdateTime) >= Plugin.PATIENCE_PRUNE_TIME)
                 {
                     DataMap.TryRemove(item.Key, out _);
-                    Plugin.Log.LogDebug("Pruned " + item.Value.patience + ", " + item.Value.reason);
+                    Plugin.Log.LogDebug("Pruned " + item.Value.patience + ", " + item.Value.reasonName);
                 }
             }
         }

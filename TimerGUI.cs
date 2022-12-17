@@ -1,40 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BepInEx.Configuration;
 using LabelCountdown.Patches;
 using UnityEngine;
-using static UnityEngine.UI.CanvasScaler;
+using static LabelCountdown.ConfigHelper;
 
 namespace LabelCountdown
 {
     public class TimerGUI
     {
+        private const int GUI_ID = 976625;
 
-        private Rect windowRect = new Rect(20, 20, 200, 10);
-        private bool collapseWindow = false;
+        private Rect windowRect;
 
-        GUIStyle nonbreakingLabelStyle;
+        private GUIStyle nonbreakingLabelStyle;
+
+
+        public TimerGUI()
+        {
+            nonbreakingLabelStyle = new GUIStyle();
+            nonbreakingLabelStyle.wordWrap = false;
+            nonbreakingLabelStyle.normal.textColor = Color.white;
+            windowRect = new Rect(WindowPosition.Value.x, WindowPosition.Value.y, 200, 10);
+        }
 
         public void OnGUI()
         {
             CustomerIndicatorViewPatch.PruneOldValues();
+            WindowPosition.Value = new Vector2(windowRect.x, windowRect.y);
 
-            nonbreakingLabelStyle = new GUIStyle();
-            nonbreakingLabelStyle.wordWrap = false;
-            nonbreakingLabelStyle.normal.textColor = Color.white;
-            windowRect = GUILayout.Window(0, windowRect, WindowFunction, "Timers");
-
-            //windowRectRes = GUILayout.Window(0, windowRectRes, ScalingWindow, "resizeable", GUILayout.MinHeight(80), GUILayout.MaxHeight(200));
+            windowRect = GUILayout.Window(GUI_ID, windowRect, WindowFunction, "Timers");
         }
 
         private void WindowFunction(int windowID)
         {
             if (GUI.Button(new Rect(5, 3, 15, 15), "X"))
             {
-                collapseWindow = !collapseWindow;
+                WindowStartsExpanded.Value = !WindowStartsExpanded.Value;
             }
 
-            if (!collapseWindow)
+            if (WindowStartsExpanded.Value)
             {
                 GUILayout.BeginVertical();
                 List<PatienceContainer> lst = new();
@@ -59,9 +65,9 @@ namespace LabelCountdown
                     {
                         return one.patience.CompareTo(two.patience);
                     });
-                
-                lst.ForEach(elem => GUILayout.Label($"{elem.patience}{(elem.isPercent ? "%" : "s")}, State: {elem.reason}", nonbreakingLabelStyle));
-                
+
+                lst.ForEach(elem => GUILayout.Label($"{elem.patience}{(elem.isPercent ? "%" : "s")}, {elem.reasonName}", nonbreakingLabelStyle));
+
                 // Need to add something if the map is empty, or it won't expand.
                 if (CustomerIndicatorViewPatch.DataMap.IsEmpty)
                 {
